@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">Skip AD</string>
+    <string name="accessibility_service_description">通过匹配关键词和 viewId，模拟点击跳过广告。</string>
+
+    <string name="header_failed">刷新失敗</string>
+    <string name="header_finish">刷新完成</string>
+    <string name="header_loading">等待底部加載完成…</string>
+    <string name="header_pulling">下拉可以刷新</string>
+    <string name="header_refreshing">正在刷新…</string>
+    <string name="header_release">釋放立即刷新</string>
+    <string name="header_secondary">釋放進入二樓</string>
+    <string name="header_update">上次更新 MM-dd HH:mm</string>
+
+    <string name="footer_failed">加載失敗</string>
+    <string name="footer_finish">加載完成</string>
+    <string name="footer_loading">正在加載…</string>
+    <string name="footer_nothing">沒有更多數據了</string>
+    <string name="footer_pulling">上拉加載更多</string>
+    <string name="footer_refreshing">等待頭部刷新完成…</string>
+    <string name="footer_release">釋放立即加載</string>
+    <string name="setting_enable">是否开启</string>
+    <string name="setting_auto_start">设置自启动</string>
+    <string name="setting_rules">设置规则</string>
+    <string name="setting_log">查看日志</string>
+    <string name="setting_version">版本</string>
+    <string name="no_data">暂无数据</string>
+    <string name="setting_keyword">关键词</string>
+    <string name="keyword">关键词</string>
+    <string name="viewid">ViewId</string>
+    <string name="exit_press_one_more">再按一次退出</string>
 </resources>

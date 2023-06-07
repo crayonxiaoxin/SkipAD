@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="log"
+            type="com.github.crayonxiaoxin.abc.model.Log" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_logo"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_5"
+                tools:text="跳过广告" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:text="@{log.app_name}"
+                android:textColor="@color/hera_black"
+                android:textSize="@dimen/dp_14"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                tools:text="跳过广告" />
+
+            <TextView
+                android:id="@+id/tv_datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{log.dt}"
+                android:textColor="@color/hera_gray"
+                android:textSize="@dimen/dp_12"
+                tools:text="2022-07-05 10:30:00" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:text="@{log.typeName()}"
+                android:textColor="@color/white"
+                android:paddingHorizontal="@dimen/dp_5"
+                android:background="@{log.typeKeyword?@color/purple_200:@color/teal_200}"
+                android:textSize="@dimen/dp_12"
+                android:textStyle="bold"
+                tools:text="跳过广告" />
+
+            <TextView
+                android:id="@+id/tv_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{log.desc()}"
+                android:textColor="@color/hera_gray"
+                android:textSize="@dimen/dp_12"
+                tools:text="2022-07-05 10:30:00" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</layout>

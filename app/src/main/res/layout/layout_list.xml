@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.scwang.smart.refresh.header.ClassicsHeader
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srlTextFailed="@string/header_failed"
+                app:srlTextFinish="@string/header_finish"
+                app:srlTextLoading="@string/header_loading"
+                app:srlTextPulling="@string/header_pulling"
+                app:srlTextRefreshing="@string/header_refreshing"
+                app:srlTextRelease="@string/header_release"
+                app:srlTextSecondary="@string/header_secondary"
+                app:srlTextUpdate="@string/header_update" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.scwang.smart.refresh.footer.ClassicsFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srlTextFailed="@string/footer_failed"
+                app:srlTextFinish="@string/footer_finish"
+                app:srlTextLoading="@string/footer_loading"
+                app:srlTextNothing="@string/footer_nothing"
+                app:srlTextPulling="@string/footer_pulling"
+                app:srlTextRefreshing="@string/footer_refreshing"
+                app:srlTextRelease="@string/footer_release" />
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:text="@string/app_name" />
+
+    </FrameLayout>
+</layout>

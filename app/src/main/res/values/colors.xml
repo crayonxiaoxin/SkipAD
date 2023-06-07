@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="style_color">#FF6200EE</color>
+    <color name="hera_black">#333333</color>
+    <color name="hera_gray_light">#cccccc</color>
+    <color name="hera_gray">#999999</color>
+    <color name="hera_blue_dark">#444FAD</color>
+    <color name="hera_gray_heavy">#666666</color>
+    <color name="hera_sep">#f6f6f6</color>
+    <color name="hera_sep_heavy">#e6e6e6</color>
 </resources>

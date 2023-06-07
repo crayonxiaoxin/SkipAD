@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomSettingView">
+        <attr name="cs_right_icon" format="reference"/>
+        <attr name="cs_title" format="string"/>
+        <attr name="cs_sub_title" format="string"/>
+        <attr name="cs_has_sep" format="boolean"/>
+        <attr name="cs_show_right_icon" format="boolean"/>
+    </declare-styleable>
+</resources>

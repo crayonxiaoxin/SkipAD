@@ -1,77 +1,68 @@
 package com.github.crayonxiaoxin.abc
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
-import android.view.View
-import android.view.accessibility.AccessibilityManager
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.github.crayonxiaoxin.abc.base.BaseActivity
+import com.github.crayonxiaoxin.abc.base.BaseFragment
 import com.github.crayonxiaoxin.abc.databinding.ActivityMainBinding
+import com.github.crayonxiaoxin.abc.ui.home.HomeFragment
+import com.github.crayonxiaoxin.abc.utils.fitSystemBar
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : BaseActivity(), IMain {
     private lateinit var binding: ActivityMainBinding
-    private val TAG = this.javaClass.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        fitSystemBar(darkIcons = true)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val skipList = arrayListOf<String>(" 跳过", "跳过 1", "跳过 ", "1 跳过", "跳过广告", "跳 过")
-        skipList.forEach {
-            if ("(.*)跳过(.*)".toRegex().matches(it.replace(" ", ""))) {
-                Log.e(TAG, "onCreate: 符合要求 - [$it]")
-            }
-        }
-
-        val accessibilityManager = getSystemService(ACCESSIBILITY_SERVICE) as? AccessibilityManager
-        accessibilityManager?.let { am ->
-            binding.helloWorld.setOnClickListener {
-                openAccessibilitySetting()
-            }
-            binding.autoStart.setOnClickListener {
-                openAppDetailSetting()
-            }
-            binding.status.setOnCheckedChangeListener { _, _ ->
-                binding.status.isChecked = am.isEnabled
-                openAccessibilitySetting()
-            }
-            accessibilityStatusChange(am.isEnabled)
-            am.addAccessibilityStateChangeListener { isEnabled ->
-                accessibilityStatusChange(isEnabled)
-            }
-        }
+        toPage(HomeFragment())
     }
 
-    // 打开应用信息页面 - 引导设置 "自启动"
-    private fun openAppDetailSetting() {
-        val intent = Intent().apply {
-            data = Uri.fromParts("package", packageName, null)
-            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        startActivity(intent)
+    override fun toPage(f: Fragment, tag: String?) {
+        addFragment(R.id.frame_layout, f, tag)
     }
 
-    // 打开无障碍设置页面 - 引导打开无障碍
-    private fun openAccessibilitySetting() {
-        val intent = Intent().apply {
-            action = Settings.ACTION_ACCESSIBILITY_SETTINGS
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        startActivity(intent)
+    override fun back() {
+        this.onBackPressed()
     }
 
-    private fun accessibilityStatusChange(isEnabled: Boolean) {
-        binding.status.isChecked = isEnabled
-        if (isEnabled) {
-            binding.helloWorld.text = "已开启"
-            binding.autoStart.visibility = View.VISIBLE
+    private var isExit = false
+
+    override fun onBackPressed() {
+        val fm = supportFragmentManager
+        val count = fm.backStackEntryCount
+        if (count > 1) {
+            with(fm.findFragmentById(R.id.frame_layout)) {
+                if (this is BaseFragment) {
+                    if (this.onBackPressed()) {
+                        fm.popBackStack()
+                    }
+                } else {
+                    super.onBackPressed()
+                }
+            }
+        } else if (count == 1) {
+            if (isExit) {
+                this.finish()
+            } else {
+                isExit = true
+                Toast.makeText(this, getString(R.string.exit_press_one_more), Toast.LENGTH_SHORT).show()
+                lifecycleScope.launch {
+                    delay(1500)
+                    isExit = false
+                }
+            }
         } else {
-            binding.helloWorld.text = "已关闭"
-            binding.autoStart.visibility = View.GONE
+            super.onBackPressed()
         }
     }
 }
