@@ -11,10 +11,10 @@ import com.github.crayonxiaoxin.abc.model.Log
 @Dao
 interface LogDao {
 
-    @Query("select distinct * from log")
+    @Query("select distinct * from log  order by id desc")
     fun getAllObx(): LiveData<List<Log>>
 
-    @Query("select distinct * from log")
+    @Query("select distinct * from log  order by id desc")
     fun getAll(): List<Log>
 
     @Query("select count(id) from (select distinct * from log)")

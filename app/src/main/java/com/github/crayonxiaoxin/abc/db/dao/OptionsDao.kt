@@ -18,6 +18,9 @@ interface OptionsDao {
     fun getAll(): List<Options>
 
     @Query("select * from options where `key` = :key")
+    fun getObx(key: String): LiveData<Options?>
+
+    @Query("select * from options where `key` = :key")
     fun get(key: String): Options?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

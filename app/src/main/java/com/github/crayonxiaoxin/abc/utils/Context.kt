@@ -5,10 +5,15 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.Fragment
 import com.github.crayonxiaoxin.abc.R
 import com.github.crayonxiaoxin.abc.model.AppInfo
 import com.github.crayonxiaoxin.abc.service.SkipAdService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 // 检查服务是否开启
 fun Context?.isAccessibilitySettingsOn(): Boolean {
@@ -80,4 +85,14 @@ fun Context?.getAppVersionName(): String {
     val packageInfo =
         this?.packageManager?.getPackageInfo(this.packageName, 0)
     return (packageInfo?.versionName) ?: ""
+}
+
+fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    CoroutineScope(Dispatchers.Main).launch {
+        Toast.makeText(this@toast, message, duration).show()
+    }
+}
+
+fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    this.context?.toast(message, duration)
 }

@@ -11,10 +11,10 @@ import com.github.crayonxiaoxin.abc.model.Keyword
 @Dao
 interface KeywordDao {
 
-    @Query("select * from keyword")
+    @Query("select * from keyword order by id desc")
     fun getAllObx(): LiveData<List<Keyword>>
 
-    @Query("select * from keyword")
+    @Query("select * from keyword order by id desc")
     fun getAll(): List<Keyword>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -8,16 +8,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.github.crayonxiaoxin.abc.R
 import com.github.crayonxiaoxin.abc.base.BaseFragment
 import com.github.crayonxiaoxin.abc.databinding.FragmentHomeBinding
+import com.github.crayonxiaoxin.abc.db.Repository
 import com.github.crayonxiaoxin.abc.navigate
 import com.github.crayonxiaoxin.abc.ui.log.LogFragment
 import com.github.crayonxiaoxin.abc.ui.rules.RulesFragment
 import com.github.crayonxiaoxin.abc.utils._e
 import com.github.crayonxiaoxin.abc.utils.getAppInfoList
 import com.github.crayonxiaoxin.abc.utils.getAppVersionName
+import com.github.crayonxiaoxin.abc.utils.hide
 import com.github.crayonxiaoxin.abc.utils.isAccessibilitySettingsOn
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -33,11 +40,25 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.settingVersion.setContent(context.getAppVersionName())
+        binding.toolBar.toolBarBack.hide()
+        binding.toolBar.toolBarTitle.text = getString(R.string.app_name)
 
+        binding.settingVersion.setContent(context.getAppVersionName())
         binding.settingRules.setOnClickListener { navigate?.toPage(RulesFragment()) }
         binding.settingLog.setOnClickListener { navigate?.toPage(LogFragment()) }
         binding.settingVersion.setOnClickListener { }
+        binding.settingMode.setOnClickListener {
+            selectMode()
+        }
+
+        lifecycleScope.launch {
+            binding.settingMode.setContent(Repository.modeValue())
+        }
+        lifecycleScope.launch {
+            Repository.optionsDao.getObx(Repository.OPTIONS_MODE).observe(viewLifecycleOwner) {
+                binding.settingMode.setContent(it?.value)
+            }
+        }
 
         val accessibilityManager =
             context?.getSystemService(AppCompatActivity.ACCESSIBILITY_SERVICE) as? AccessibilityManager
@@ -61,6 +82,20 @@ class HomeFragment : BaseFragment() {
         context?.getAppInfoList()?.forEach {
             _e(msg = it.toString())
         }
+    }
+
+    private fun selectMode() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.setting_mode)
+            .setItems(
+                Repository.modes.toTypedArray()
+            ) { dialog, which ->
+                dialog.dismiss()
+                lifecycleScope.launch {
+                    Repository.setMode(Repository.modes[which])
+                }
+            }
+            .show()
     }
 
     // 打开应用信息页面 - 引导设置 "自启动"

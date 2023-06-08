@@ -14,7 +14,8 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Logger.provide(BuildConfig.DEBUG)
+//        Logger.provide(BuildConfig.DEBUG)
+        Logger.provide(false)
         appContext = this.applicationContext
         db = database
         CoroutineScope(Dispatchers.IO).launch {

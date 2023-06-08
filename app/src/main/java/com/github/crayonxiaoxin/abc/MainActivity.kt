@@ -9,6 +9,7 @@ import com.github.crayonxiaoxin.abc.base.BaseFragment
 import com.github.crayonxiaoxin.abc.databinding.ActivityMainBinding
 import com.github.crayonxiaoxin.abc.ui.home.HomeFragment
 import com.github.crayonxiaoxin.abc.utils.fitSystemBar
+import com.github.crayonxiaoxin.abc.utils.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -55,7 +56,7 @@ class MainActivity : BaseActivity(), IMain {
                 this.finish()
             } else {
                 isExit = true
-                Toast.makeText(this, getString(R.string.exit_press_one_more), Toast.LENGTH_SHORT).show()
+                toast(getString(R.string.exit_press_one_more))
                 lifecycleScope.launch {
                     delay(1500)
                     isExit = false

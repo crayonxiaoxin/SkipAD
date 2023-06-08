@@ -47,6 +47,8 @@ class SkipAdService : AccessibilityService() {
     // 忽略 - viewId
     private var _ignoreViewIds = listOf<ViewId>()
 
+    private var _mode = Repository.MODE_VIEW
+
     private val serviceScope = CoroutineScope(Job() + Dispatchers.IO)
 
     override fun onServiceConnected() {
@@ -59,6 +61,11 @@ class SkipAdService : AccessibilityService() {
             Repository.viewIdDao.getAllObx().observeForever {
                 _matchViewIds = it.filter { it.isTypeMatch() }
                 _ignoreViewIds = it.filter { it.isTypeIgnore() }
+            }
+        }
+        serviceScope.launch(Dispatchers.Main) {
+            Repository.optionsDao.getObx(Repository.OPTIONS_MODE).observeForever {
+                _mode = it?.value ?: Repository.MODE_VIEW
             }
         }
     }
@@ -173,7 +180,7 @@ class SkipAdService : AccessibilityService() {
         val replaceText = viewId.replace(" ", "")
         // 如果至少有一个匹配关键词，则表示匹配
         return _ignoreViewIds.any {
-            it.viewId == replaceText
+            !it.viewId.isNullOrEmpty() && it.viewId == replaceText
         }
     }
 
@@ -200,12 +207,15 @@ class SkipAdService : AccessibilityService() {
     private fun handleSkip(child: AccessibilityNodeInfo): Boolean {
         // 如果当前节点就是
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            clickRect2Skip(child)
+            if (Repository.isModeRect(_mode)) {
+                clickRect2Skip(child)
+            } else {
+                findSkipClickableNode(child)
+            }
             true
         } else {
             findSkipClickableNode(child)
         }
-//        return findSkipClickableNode(child)
     }
 
 
@@ -230,7 +240,7 @@ class SkipAdService : AccessibilityService() {
         val replaceText = viewId.replace(" ", "")
         // 如果至少有一个匹配关键词，则表示匹配
         return _matchViewIds.any {
-            it.viewId == replaceText
+            !it.viewId.isNullOrEmpty() && it.viewId == replaceText
         }
     }
 

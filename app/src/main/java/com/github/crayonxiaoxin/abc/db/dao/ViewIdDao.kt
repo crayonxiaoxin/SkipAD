@@ -11,10 +11,10 @@ import com.github.crayonxiaoxin.abc.model.ViewId
 @Dao
 interface ViewIdDao {
 
-    @Query("select * from viewid")
+    @Query("select * from viewid  order by id desc")
     fun getAllObx(): LiveData<List<ViewId>>
 
-    @Query("select * from viewid")
+    @Query("select * from viewid  order by id desc")
     fun getAll(): List<ViewId>
 
     @Query("select * from viewid where type = :type")
