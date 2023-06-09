@@ -3,6 +3,7 @@ package com.github.crayonxiaoxin.abc.ui.log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
 import com.github.crayonxiaoxin.abc.App
 import com.github.crayonxiaoxin.abc.base.BaseListAdapter
 import com.github.crayonxiaoxin.abc.databinding.ItemLogBinding
@@ -35,6 +36,7 @@ class LogAdapter : BaseListAdapter<Log, ItemLogBinding>(diff) {
 
     override fun bindItemViewHolder(position: Int, data: Log, holder: ViewHolder) {
         holder.binding.log = data
-        holder.binding.ivLogo.setImageDrawable(data.logo(holder.itemView.context))
+        Glide.with(holder.binding.ivLogo).load(data.logo(holder.itemView.context))
+            .into(holder.binding.ivLogo)
     }
 }

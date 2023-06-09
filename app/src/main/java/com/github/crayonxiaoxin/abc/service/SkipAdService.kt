@@ -77,11 +77,8 @@ class SkipAdService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         event?.let {
-//            _e(TAG, "onAccessibilityEvent: [事件] $event")
-            if (filterEvents.contains(it.eventType)) {
-//                if (it.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-//                    getActivityInfo(it)
-//                }
+            // 匹配事件类型 并且 不是自己
+            if (it.packageName != packageName && filterEvents.contains(it.eventType)) {
                 it.source?.let { source ->
                     skipAD(source)
                 }
@@ -149,10 +146,10 @@ class SkipAdService : AccessibilityService() {
                     )
                 }
                 return
-            } else if (text != null && isTextView && matchSkipKeywords(text.toString()) && !isIgnoreItem(
-                    child
-                )
-            ) {
+            } else if (isIgnoreItem(child)) {
+                // 匹配文字：忽略列表项，输入框以及 webView 内容
+                return
+            } else if (text != null && isTextView && matchSkipKeywords(text.toString())) {
                 // 匹配文字（可能误触）：不能是列表项，输入框以及 webView 内容
                 val isSkip = handleSkip(child)
                 _e(
@@ -194,11 +191,7 @@ class SkipAdService : AccessibilityService() {
         val isGridView = GridView::class.java.name == parent.className
         val isScrollView = ScrollView::class.java.name == parent.className
         val isWebView = WebView::class.java.name == parent.className
-        return if (isRecyclerView || isListView || isGridView || isScrollView || isWebView) {
-            true
-        } else {
-            isIgnoreItem(parent)
-        }
+        return isRecyclerView || isListView || isGridView || isScrollView || isWebView
     }
 
     /**
