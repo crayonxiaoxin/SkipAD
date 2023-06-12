@@ -14,6 +14,9 @@ import android.widget.ListView
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.RecyclerView
 import com.github.crayonxiaoxin.abc.db.Repository
 import com.github.crayonxiaoxin.abc.model.Keyword
@@ -27,7 +30,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class SkipAdService : AccessibilityService() {
+class SkipAdService : AccessibilityService(), LifecycleOwner {
+
+    override val lifecycle: Lifecycle
+        get() = lifecycleRegistry
+
+    private lateinit var lifecycleRegistry: LifecycleRegistry
 
     private val TAG = this.javaClass.name
 
@@ -51,6 +59,12 @@ class SkipAdService : AccessibilityService() {
 
     private val serviceScope = CoroutineScope(Job() + Dispatchers.IO)
 
+    override fun onCreate() {
+        super.onCreate()
+        lifecycleRegistry = LifecycleRegistry(this)
+        lifecycleRegistry.currentState = Lifecycle.State.CREATED
+    }
+
     override fun onServiceConnected() {
         serviceScope.launch(Dispatchers.Main) {
             Repository.keywordDao.getAllObx().observeForever {
@@ -71,6 +85,7 @@ class SkipAdService : AccessibilityService() {
     }
 
     override fun onDestroy() {
+        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         super.onDestroy()
         serviceScope.cancel()
     }
@@ -101,6 +116,10 @@ class SkipAdService : AccessibilityService() {
         _e(TAG, "onAccessibilityEvent: [事件] $eventTypeToString")
     }
 
+    // 当前匹配节点的 hashcode，防止多次回调导致的重复点击
+    @Volatile
+    private var matchHashCode: Int = 0
+
     /**
      * 跳过广告
      */
@@ -115,7 +134,7 @@ class SkipAdService : AccessibilityService() {
             val isTextView = TextView::class.java.name == child.className
             _e(
                 TAG,
-                "skipAD: $text，${pkg}, ${child.className}, ${child.viewIdResourceName}"
+                "skipAD: $text，${pkg}, ${child.className}, ${child.viewIdResourceName}, ${child.windowId}, ${child.hashCode()}"
             )
             if (isIgnoreViewId(viewId)) {
                 _e(TAG, "skipAD: [忽略ID] --- $viewId")
@@ -128,10 +147,10 @@ class SkipAdService : AccessibilityService() {
                             viewId = viewId
                         )
                     )
-                    cancel()
                 }
                 return
             } else if (viewId != null && matchSkipViewIds(viewId)) {
+                if (duplicate(source)) return
                 // 匹配 viewId
                 val isSkip = handleSkip(child)
                 _e(TAG, "skipAD: [匹配ID] --- $viewId, ${if (isSkip) "已跳过" else "未能跳过"}")
@@ -150,6 +169,7 @@ class SkipAdService : AccessibilityService() {
                 // 匹配文字：忽略列表项，输入框以及 webView 内容
                 return
             } else if (text != null && isTextView && matchSkipKeywords(text.toString())) {
+                if (duplicate(source)) return
                 // 匹配文字（可能误触）：不能是列表项，输入框以及 webView 内容
                 val isSkip = handleSkip(child)
                 _e(
@@ -170,6 +190,14 @@ class SkipAdService : AccessibilityService() {
                 skipAD(child)
             }
         }
+    }
+
+    // 防止重复点击，通过 hashcode 判断是否同一个对象
+    private fun duplicate(source: AccessibilityNodeInfo): Boolean {
+        _e(TAG, "skipAD: [重复，忽略]")
+        if (source.hashCode() == matchHashCode) return true
+        matchHashCode = source.hashCode()
+        return false
     }
 
     private fun isIgnoreViewId(viewId: String?): Boolean {
