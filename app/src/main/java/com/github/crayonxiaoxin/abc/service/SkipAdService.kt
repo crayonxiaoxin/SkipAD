@@ -153,6 +153,7 @@ class SkipAdService : AccessibilityService(), LifecycleOwner {
                 if (duplicate(source)) return
                 // 匹配 viewId
                 val isSkip = handleSkip(child)
+                if (isSkip) matchHashCode = source.hashCode()
                 _e(TAG, "skipAD: [匹配ID] --- $viewId, ${if (isSkip) "已跳过" else "未能跳过"}")
                 serviceScope.launch {
                     Repository.logDao.insertAll(
@@ -172,6 +173,7 @@ class SkipAdService : AccessibilityService(), LifecycleOwner {
                 if (duplicate(source)) return
                 // 匹配文字（可能误触）：不能是列表项，输入框以及 webView 内容
                 val isSkip = handleSkip(child)
+                if (isSkip) matchHashCode = source.hashCode()
                 _e(
                     TAG, "skipAD: [匹配文字] --- $text, ${if (isSkip) "已跳过" else "未能跳过"}"
                 )
@@ -196,7 +198,6 @@ class SkipAdService : AccessibilityService(), LifecycleOwner {
     private fun duplicate(source: AccessibilityNodeInfo): Boolean {
         _e(TAG, "skipAD: [重复，忽略]")
         if (source.hashCode() == matchHashCode) return true
-        matchHashCode = source.hashCode()
         return false
     }
 

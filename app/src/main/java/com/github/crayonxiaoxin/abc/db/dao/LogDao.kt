@@ -18,6 +18,9 @@ interface LogDao {
     fun getAll(): List<Log>
 
     @Query("select count(id) from (select distinct * from log)")
+    fun getSizeObx(): LiveData<Int>
+
+    @Query("select count(id) from (select distinct * from log)")
     fun getSize(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

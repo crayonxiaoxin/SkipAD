@@ -18,7 +18,7 @@
     <string name="footer_pulling">上拉加載更多</string>
     <string name="footer_refreshing">等待頭部刷新完成…</string>
     <string name="footer_release">釋放立即加載</string>
-    <string name="setting_enable">是否开启</string>
+    <string name="setting_enable">开启服务</string>
     <string name="setting_auto_start">设置自启动</string>
     <string name="setting_rules">设置规则</string>
     <string name="setting_log">查看日志</string>
@@ -26,7 +26,7 @@
     <string name="no_data">暂无数据</string>
     <string name="setting_keyword">关键词</string>
     <string name="keyword">关键词</string>
-    <string name="viewid">ViewId</string>
+    <string name="viewid">View Id</string>
     <string name="exit_press_one_more">再按一次退出</string>
     <string name="setting_mode">点击模式</string>
     <string name="add">添加</string>

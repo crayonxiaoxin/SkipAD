@@ -23,6 +23,7 @@ import com.github.crayonxiaoxin.abc.utils.getAppInfoList
 import com.github.crayonxiaoxin.abc.utils.getAppVersionName
 import com.github.crayonxiaoxin.abc.utils.hide
 import com.github.crayonxiaoxin.abc.utils.isAccessibilitySettingsOn
+import com.github.crayonxiaoxin.abc.utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -69,18 +70,16 @@ class HomeFragment : BaseFragment() {
             binding.settingAutoStart.setOnClickListener {
                 openAppDetailSetting()
             }
+            binding.status.setOnClickListener {
+                openAccessibilitySetting()
+            }
             binding.status.setOnCheckedChangeListener { _, _ ->
                 binding.status.isChecked = am.isEnabled && context.isAccessibilitySettingsOn()
-                openAccessibilitySetting()
             }
             accessibilityStatusChange(am.isEnabled && context.isAccessibilitySettingsOn())
             am.addAccessibilityStateChangeListener { isEnabled ->
                 accessibilityStatusChange(isEnabled && context.isAccessibilitySettingsOn())
             }
-        }
-
-        context?.getAppInfoList()?.forEach {
-            _e(msg = it.toString())
         }
     }
 

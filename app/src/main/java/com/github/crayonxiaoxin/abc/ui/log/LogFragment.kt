@@ -45,6 +45,11 @@ class LogFragment : BaseListFragment<Log, ItemLogBinding, LogAdapter, FragmentLi
                 adapter.submitList(it)
             }
         }
+        lifecycleScope.launch {
+            Repository.logDao.getSizeObx().observe(this@LogFragment){
+                rootBinding.toolBar.toolBarTitle.text = getString(R.string.setting_log)+" ($it)"
+            }
+        }
     }
 
     override fun refreshData() {
